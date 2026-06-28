@@ -1,0 +1,10 @@
+komorebi (2.1-1) trixie; urgency=medium
+
+  * Modernized build system for Debian 13 (Trixie)
+  * Migrated from webkit2gtk-4.0 to webkit2gtk-4.1
+  * Updated install paths to FHS standards
+  * Added Docker-based reproducible build environment
+  * Switched to automatic dependency detection (dpkg-shlibdeps)
+  * Updated CMake minimum version to 3.16
+
+ -- Komorebi maintainers <noreply@example.com>  Mon, 01 Jan 2024 00:00:00 +0000

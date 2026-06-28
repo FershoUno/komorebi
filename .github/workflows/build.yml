@@ -1,0 +1,41 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [main]
+    tags: ["*"]
+  release:
+    types: [published, created]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Debian package
+        run: ./build.sh
+
+      - name: Locate .deb package
+        id: deb
+        run: |
+          DEB_FILE=$(ls output/*.deb | head -1)
+          echo "file=$DEB_FILE" >> "$GITHUB_OUTPUT"
+          echo "name=$(basename "$DEB_FILE")" >> "$GITHUB_OUTPUT"
+
+      - name: Upload .deb as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: komorebi-deb
+          path: ${{ steps.deb.outputs.file }}
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Komorebi ${{ github.ref_name }}
+          files: ${{ steps.deb.outputs.file }}
